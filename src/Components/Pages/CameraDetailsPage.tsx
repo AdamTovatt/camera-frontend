@@ -4,7 +4,8 @@ import { getCameraList } from "../../Functions/Api";
 import { Color } from "../Constants";
 import IconButton from "../IconButton";
 import { ArrowLeft } from "react-feather";
-import HorizontalSpacing from "../HorizontalSpacing";
+import VerticalSpacing from "../HorizontalSpacing";
+import ImageWindow from "../ImageWindow";
 
 interface ImageUpdateEvent {
   data: string;
@@ -16,14 +17,6 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-`;
-
-const Image = styled.img`
-  max-width: 100%;
-  max-height: 100%;
-  border: 5px solid ${Color.Height1};
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 `;
 
 const ButtonContainer = styled.div`
@@ -74,7 +67,7 @@ function CameraDetailsPage({
     if (!selectedCamera) return;
     const endpointUrl =
       process.env.REACT_APP_API_ENDPOINT_URL +
-      `/camera/stream-image?cameraId=${selectedCamera.id}&updateDelay=1500`;
+      `/camera/stream-image?cameraId=${selectedCamera.id}&updateDelay=3`;
 
     if (!endpointUrl) {
       throw new Error(
@@ -116,8 +109,8 @@ function CameraDetailsPage({
         />
         <HeaderText>{selectedCamera?.name}</HeaderText>
       </DetailsViewHeader>
-      <HorizontalSpacing />
-      <Image src={imageDataUrl} />
+      <VerticalSpacing />
+      <ImageWindow imageSource={imageDataUrl} />
       <ButtonContainer>
         {cameras.map((camera, index) => (
           <SelectableButton

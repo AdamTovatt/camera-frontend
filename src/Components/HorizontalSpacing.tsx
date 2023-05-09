@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
-const HorizontalSpacingDiv = styled.div<{ height: number }>`
-  min-height: ${(props) => props.height}rem;
+const HorizontalSpacingDiv = styled.div<{ width: number }>`
+  min-width: ${(props) => props.width}rem;
 `;
 
-function HorizontalSpacing({ height }: { height?: number | undefined }) {
-  return <HorizontalSpacingDiv height={height ? height : 1} />;
+function HorizontalSpacing({ width }: { width?: number | undefined }) {
+  return <HorizontalSpacingDiv width={width ? width : 1} />;
 }
 
 export default HorizontalSpacing;
