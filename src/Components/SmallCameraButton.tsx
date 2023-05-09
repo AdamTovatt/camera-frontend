@@ -52,7 +52,7 @@ const PreviewImagePlaceholder = styled.div`
   justify-content: center;
 `;
 
-function CameraButton({
+function SmallCameraButton({
   camera,
   onClick,
 }: {
@@ -94,4 +94,4 @@ function GetCameraStatusColor({
   else return Color.Positive;
 }
 
-export default CameraButton;
+export default SmallCameraButton;

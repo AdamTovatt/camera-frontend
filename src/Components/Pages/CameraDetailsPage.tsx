@@ -4,19 +4,26 @@ import { getCameraList } from "../../Functions/Api";
 import { Color } from "../Constants";
 import IconButton from "../IconButton";
 import { ArrowLeft } from "react-feather";
-import VerticalSpacing from "../HorizontalSpacing";
 import ImageWindow from "../ImageWindow";
+import Header from "../Header";
+import VerticalSpacing from "../VerticalSpacing";
 
 interface ImageUpdateEvent {
   data: string;
 }
 
-const Container = styled.div`
+const Page = styled.div`
+  width: 100%;
+  height: 100%;
   display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+`;
+
+const InnerPage = styled.div`
+  margin-left: 2rem;
+  margin-right: 2rem;
 `;
 
 const ButtonContainer = styled.div`
@@ -34,8 +41,11 @@ const SelectableButton = styled.button<{ isSelected: boolean }>`
 
 const DetailsViewHeader = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
+`;
+
+const DescriptionText = styled.div`
+  color: ${Color.White};
 `;
 
 const HeaderText = styled.div`
@@ -48,7 +58,7 @@ export interface CameraInformation {
   name: string;
   description: string;
   preview: string | null;
-  lastActive: string;
+  lastActive: Date;
 }
 
 function CameraDetailsPage({
@@ -78,8 +88,16 @@ function CameraDetailsPage({
     const eventSource = new EventSource(endpointUrl);
 
     eventSource.addEventListener("image-update", (event: ImageUpdateEvent) => {
-      console.log("image-update");
       setImageDataUrl(event.data);
+      if (event.data.length > 100) {
+        setSelectedCamera((prevCamera) => {
+          if (prevCamera) {
+            const updatedCamera = { ...prevCamera, lastActive: new Date() };
+            return updatedCamera;
+          }
+          return null;
+        });
+      }
     });
 
     eventSource.addEventListener("error", (event) => {
@@ -99,7 +117,47 @@ function CameraDetailsPage({
   }, []);
 
   return (
-    <Container>
+    <Page>
+      <Header />
+      <VerticalSpacing height={7} />
+      <InnerPage>
+        <CameraViewSection
+          selectedCamera={selectedCamera}
+          onClosedDetailsView={onClosedDetailsView}
+          imageDataUrl={imageDataUrl}
+        />
+        <CameraDescriptionSection selectedCamera={selectedCamera} />
+      </InnerPage>
+    </Page>
+  );
+}
+
+function CameraDescriptionSection({
+  selectedCamera,
+}: {
+  selectedCamera: CameraInformation | null;
+}) {
+  return (
+    <>
+      <VerticalSpacing height={1.5} />
+      <DescriptionText>
+        Description: {selectedCamera?.description}
+      </DescriptionText>
+    </>
+  );
+}
+
+function CameraViewSection({
+  selectedCamera,
+  onClosedDetailsView,
+  imageDataUrl,
+}: {
+  selectedCamera: CameraInformation | null;
+  onClosedDetailsView: () => void;
+  imageDataUrl: string;
+}) {
+  return (
+    <>
       <DetailsViewHeader>
         <IconButton
           onClick={() => {
@@ -109,20 +167,11 @@ function CameraDetailsPage({
         />
         <HeaderText>{selectedCamera?.name}</HeaderText>
       </DetailsViewHeader>
-      <VerticalSpacing />
-      <ImageWindow imageSource={imageDataUrl} />
-      <ButtonContainer>
-        {cameras.map((camera, index) => (
-          <SelectableButton
-            key={index}
-            isSelected={selectedCamera === camera}
-            onClick={() => setSelectedCamera(camera)}
-          >
-            Camera {camera.id}
-          </SelectableButton>
-        ))}
-      </ButtonContainer>
-    </Container>
+      <VerticalSpacing height={1.5} />
+      {selectedCamera && (
+        <ImageWindow imageSource={imageDataUrl} camera={selectedCamera} />
+      )}
+    </>
   );
 }
 

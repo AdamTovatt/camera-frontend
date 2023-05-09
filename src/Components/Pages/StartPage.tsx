@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { CameraInformation } from "./CameraDetailsPage";
 import { getCameraList } from "../../Functions/Api";
-import { Color } from "../Constants";
 import Header from "../Header";
 import CameraButton from "../CameraButton";
 import VerticalSpacing from "../VerticalSpacing";
+import { Color } from "../Constants";
 
 const Page = styled.div`
   width: 100%;
@@ -19,6 +19,7 @@ const Page = styled.div`
 const InnerPage = styled.div`
   margin-left: 2rem;
   margin-right: 2rem;
+  color: ${Color.White};
 `;
 
 const CameraListContainer = styled.div`
@@ -45,7 +46,9 @@ function StartPage({
     <Page>
       <Header />
       <InnerPage>
-        <VerticalSpacing height={8} />
+        <VerticalSpacing height={7} />
+        Cameras:
+        <VerticalSpacing height={1.5} />
         <CameraListContainer>
           {cameras.map((camera, index) => (
             <div>
