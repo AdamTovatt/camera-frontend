@@ -17,6 +17,7 @@ const MainContainer = styled.button`
   font-family: "Jost";
   color: ${Color.White};
   font-size: 16px;
+  margin-bottom: 1rem;
 
   &:hover {
     background-color: ${Color.Height1Lighter};

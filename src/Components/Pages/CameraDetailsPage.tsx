@@ -24,19 +24,14 @@ const Page = styled.div`
 const InnerPage = styled.div`
   margin-left: 2rem;
   margin-right: 2rem;
-`;
 
-const ButtonContainer = styled.div`
-  margin-top: 20px;
-`;
+  max-width: calc(100% - 2rem);
+  color: ${Color.White};
 
-const SelectableButton = styled.button<{ isSelected: boolean }>`
-  margin: 0 10px;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  background-color: ${(props) => (props.isSelected ? "#ccc" : "#fff")};
-  cursor: pointer;
+  @media (max-width: 560px) {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
 `;
 
 const DetailsViewHeader = styled.div`
@@ -127,6 +122,7 @@ function CameraDetailsPage({
           imageDataUrl={imageDataUrl}
         />
         <CameraDescriptionSection selectedCamera={selectedCamera} />
+        <VerticalSpacing height={1.5} />
       </InnerPage>
     </Page>
   );

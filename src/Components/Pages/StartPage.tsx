@@ -19,11 +19,20 @@ const Page = styled.div`
 const InnerPage = styled.div`
   margin-left: 2rem;
   margin-right: 2rem;
+  max-width: calc(100% - 2rem);
   color: ${Color.White};
+
+  @media (max-width: 560px) {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
 `;
 
 const CameraListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 30rem;
+  max-width: 100%;
 `;
 
 function StartPage({
@@ -51,14 +60,11 @@ function StartPage({
         <VerticalSpacing height={1.5} />
         <CameraListContainer>
           {cameras.map((camera, index) => (
-            <div>
-              <CameraButton
-                key={index}
-                onClick={() => onSelectedCamera(camera)}
-                camera={camera}
-              />
-              <VerticalSpacing height={1} />
-            </div>
+            <CameraButton
+              key={index}
+              onClick={() => onSelectedCamera(camera)}
+              camera={camera}
+            />
           ))}
         </CameraListContainer>
       </InnerPage>

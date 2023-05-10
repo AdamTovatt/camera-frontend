@@ -1,13 +1,15 @@
 import styled from "styled-components";
 import { Color } from "./Constants";
-import { Maximize, Maximize2, Tv, VideoOff, WifiOff } from "react-feather";
+import { Maximize2, Tv, VideoOff } from "react-feather";
 import { CameraInformation } from "./Pages/CameraDetailsPage";
 import VerticalSpacing from "./VerticalSpacing";
 import IconButton from "./IconButton";
+import { useState } from "react";
 
 const MainContainer = styled.div`
   display: flex;
   width: 100%;
+  max-width: 100%;
   justify-content: space-between;
   align-items: center;
 `;
@@ -30,12 +32,33 @@ const ImageContainerBottomRow = styled.div`
 
 const ActiveText = styled.div``;
 
-const Image = styled.img``;
+const Image = styled.img`
+  max-width: 100%;
+`;
+
+const FullScreenImage = styled.img`
+  position: fixed;
+  width: 100vw;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+`;
+
+const FullScreenImageContainer = styled.div`
+  background-color: ${Color.Height0};
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+`;
 
 const ImagePlaceHolder = styled.div`
   background-color: ${Color.Height0};
-  min-width: 640px;
-  min-height: 480px;
+  width: 640px;
+  height: 480px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,6 +67,7 @@ const ImagePlaceHolder = styled.div`
   font-family: "Jost";
   font-size: 20px;
   color: ${Color.White};
+  max-width: calc(100vw - 4rem);
 `;
 
 function ImageWindow({
@@ -53,13 +77,27 @@ function ImageWindow({
   imageSource: string | undefined;
   camera: CameraInformation;
 }) {
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
   return (
     <MainContainer>
       <ImageContainer>
         {imageSource ? (
           <>
             {imageSource.length > 100 ? (
-              <Image src={imageSource} />
+              <>
+                {isFullScreen ? (
+                  <FullScreenImageContainer
+                    onClick={() => {
+                      setIsFullScreen(false);
+                    }}
+                  >
+                    <FullScreenImage src={imageSource} />
+                  </FullScreenImageContainer>
+                ) : (
+                  <Image src={imageSource} />
+                )}
+              </>
             ) : (
               <ImagePlaceHolder>
                 <VideoOff size={128} strokeWidth={1} />
@@ -78,7 +116,9 @@ function ImageWindow({
           <ActiveText>{GetCameraStatus({ camera })}</ActiveText>
           <IconButton
             icon={<Maximize2 color={Color.White} />}
-            onClick={() => {}}
+            onClick={() => {
+              setIsFullScreen(true);
+            }}
           />
         </ImageContainerBottomRow>
       </ImageContainer>
