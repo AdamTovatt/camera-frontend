@@ -52,7 +52,11 @@ function Header() {
   return (
     <HeaderContainer>
       <HeaderContent>
-        <Logo>
+        <Logo
+          onClick={() => {
+            window.location.reload();
+          }}
+        >
           <Aperture style={{ color: Color.White, strokeWidth: 1 }} size={52} />
         </Logo>
         <HorizontalSpacing width={0.8} />

@@ -51,6 +51,8 @@ function StartPage({
     });
   }, []);
 
+  console.log(cameras);
+
   return (
     <Page>
       <Header />
