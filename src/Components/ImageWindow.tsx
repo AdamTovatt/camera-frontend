@@ -72,10 +72,10 @@ const ImagePlaceHolder = styled.div`
 
 function ImageWindow({
   imageSource,
-  camera,
+  lastDate,
 }: {
   imageSource: string | undefined;
-  camera: CameraInformation;
+  lastDate: Date;
 }) {
   const [isFullScreen, setIsFullScreen] = useState(false);
 
@@ -113,7 +113,7 @@ function ImageWindow({
         )}
         <VerticalSpacing />
         <ImageContainerBottomRow>
-          <ActiveText>{GetCameraStatus({ camera })}</ActiveText>
+          <ActiveText>{GetCameraStatus({ lastDate })}</ActiveText>
           <IconButton
             icon={<Maximize2 color={Color.White} />}
             onClick={() => {
@@ -126,16 +126,15 @@ function ImageWindow({
   );
 }
 
-function GetCameraStatus({ camera }: { camera: CameraInformation }): string {
-  const timeSinceActive =
-    (new Date().getTime() - new Date(camera.lastActive).getTime()) / 1000; // 1000 = 1 second in milliseconds (we want to convert to seconds)
+function GetCameraStatus({ lastDate }: { lastDate: Date }): string {
+  const timeSinceActive = (new Date().getTime() - lastDate.getTime()) / 1000; // 1000 = 1 second in milliseconds (we want to convert to seconds)
 
   if (timeSinceActive < 10) return "(Live view)";
   if (timeSinceActive < 120) return timeSinceActive + " seconds ago";
   if (timeSinceActive < 3600)
     return Math.floor(timeSinceActive / 60) + " minutes ago";
 
-  return "Last active: " + new Date(camera.lastActive).toLocaleString();
+  return "Last active: " + new Date(lastDate).toLocaleString();
 }
 
 export default ImageWindow;

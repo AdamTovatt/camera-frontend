@@ -7,6 +7,7 @@ import { ArrowLeft } from "react-feather";
 import ImageWindow from "../ImageWindow";
 import Header from "../Header";
 import VerticalSpacing from "../VerticalSpacing";
+import Joystick from "../Joystick";
 
 interface ImageUpdateEvent {
   data: string;
@@ -67,6 +68,7 @@ function CameraDetailsPage({
   const [cameras, setCameras] = useState<CameraInformation[]>([]);
   const [selectedCamera, setSelectedCamera] =
     useState<CameraInformation | null>(camera);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   useEffect(() => {
     if (!selectedCamera) return;
@@ -85,13 +87,7 @@ function CameraDetailsPage({
     eventSource.addEventListener("image-update", (event: ImageUpdateEvent) => {
       setImageDataUrl(event.data);
       if (event.data.length > 100) {
-        setSelectedCamera((prevCamera) => {
-          if (prevCamera) {
-            const updatedCamera = { ...prevCamera, lastActive: new Date() };
-            return updatedCamera;
-          }
-          return null;
-        });
+        setLastUpdated(new Date());
       }
     });
 
@@ -102,7 +98,7 @@ function CameraDetailsPage({
     return () => {
       eventSource.close();
     };
-  }, [selectedCamera, cameras]);
+  }, [selectedCamera]);
 
   useEffect(() => {
     getCameraList().then((data) => {
@@ -120,6 +116,7 @@ function CameraDetailsPage({
           selectedCamera={selectedCamera}
           onClosedDetailsView={onClosedDetailsView}
           imageDataUrl={imageDataUrl}
+          lastDate={lastUpdated || new Date("2023-05-01")}
         />
         <CameraDescriptionSection selectedCamera={selectedCamera} />
         <VerticalSpacing height={1.5} />
@@ -139,6 +136,10 @@ function CameraDescriptionSection({
       <DescriptionText>
         Description: {selectedCamera?.description}
       </DescriptionText>
+      <VerticalSpacing height={1.5} />
+      Camera control:
+      <VerticalSpacing height={0.5} />
+      {selectedCamera && <Joystick cameraId={selectedCamera.id} />}
     </>
   );
 }
@@ -147,10 +148,12 @@ function CameraViewSection({
   selectedCamera,
   onClosedDetailsView,
   imageDataUrl,
+  lastDate,
 }: {
   selectedCamera: CameraInformation | null;
   onClosedDetailsView: () => void;
   imageDataUrl: string;
+  lastDate: Date;
 }) {
   return (
     <>
@@ -165,7 +168,7 @@ function CameraViewSection({
       </DetailsViewHeader>
       <VerticalSpacing height={1.5} />
       {selectedCamera && (
-        <ImageWindow imageSource={imageDataUrl} camera={selectedCamera} />
+        <ImageWindow imageSource={imageDataUrl} lastDate={lastDate} />
       )}
     </>
   );

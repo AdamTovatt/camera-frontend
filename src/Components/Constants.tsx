@@ -7,5 +7,5 @@ export const Color = {
   Positive: "#81C784",
   Warning: "#E3CA76",
   Negative: "#E8695F",
-  White: "#DCD7C9",
+  White: "#dcd7c9",
 };
