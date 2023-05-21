@@ -6,9 +6,7 @@ import { moveCamera } from "../Functions/Api";
 
 const MainContainer = styled.div`
   min-width: 100%;
-  min-height: 100%;
   width: 100%;
-  height: 100%;
   color: ${Color.White};
   font-size: 24px;
   display: flex;
@@ -21,8 +19,8 @@ const MainContainer = styled.div`
 
 const InnerContainer = styled.div`
   background-color: ${Color.Height1};
-  width: 100%;
-  height: 100%;
+  min-width: 10rem;
+  min-height: 10rem;
   max-width: 10rem;
   max-height: 10rem;
   border-radius: 10px;

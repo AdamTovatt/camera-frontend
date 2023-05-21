@@ -120,6 +120,9 @@ function CameraDetailsPage({
         />
         <CameraDescriptionSection selectedCamera={selectedCamera} />
         <VerticalSpacing height={1.5} />
+        Camera control:
+        <VerticalSpacing height={0.5} />
+        {selectedCamera && <Joystick cameraId={selectedCamera.id} />}
       </InnerPage>
     </Page>
   );
@@ -136,10 +139,6 @@ function CameraDescriptionSection({
       <DescriptionText>
         Description: {selectedCamera?.description}
       </DescriptionText>
-      <VerticalSpacing height={1.5} />
-      Camera control:
-      <VerticalSpacing height={0.5} />
-      {selectedCamera && <Joystick cameraId={selectedCamera.id} />}
     </>
   );
 }
