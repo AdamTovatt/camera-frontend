@@ -8,6 +8,7 @@ import ImageWindow from "../ImageWindow";
 import Header from "../Header";
 import VerticalSpacing from "../VerticalSpacing";
 import Joystick from "../Joystick";
+import VideoWindow from "../VideoWindow";
 
 interface ImageUpdateEvent {
   data: string;
@@ -154,79 +155,6 @@ function CameraViewSection({
   imageDataUrl: string;
   lastDate: Date;
 }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const webSocketRef = useRef<WebSocket | null>(null);
-  const [previousImageUrl, setPreviousImageUrl] = useState<string>("");
-
-  useEffect(() => {
-    // Create a WebSocket connection
-    webSocketRef.current = new WebSocket(
-      "ws://localhost:5000/video-output-stream"
-    );
-
-    // Clean up the WebSocket connection on unmount
-    return () => {
-      if (webSocketRef.current) {
-        webSocketRef.current.close();
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!webSocketRef.current) return;
-
-    // Send an initial message with the value 1 when the WebSocket is open
-    const onOpen = () => {
-      webSocketRef.current?.send(new Uint8Array([1])); // send the camera id
-    };
-
-    const onError = (event: Event) => {
-      console.log("error", event);
-    };
-
-    const onClose = (event: CloseEvent) => {
-      console.log("close", event);
-    };
-
-    webSocketRef.current.addEventListener("open", onOpen);
-    webSocketRef.current.addEventListener("error", onError);
-    webSocketRef.current.addEventListener("close", onClose);
-
-    // Handle received data from the WebSocket
-    const onMessage = (event: MessageEvent) => {
-      const data = event.data; // Received data as a byte array
-
-      // Create a Blob from the byte array
-      const blob = new Blob([data], { type: "video/mp4" });
-
-      // Create an object URL for the Blob
-      const videoUrl = URL.createObjectURL(blob);
-      console.log(videoUrl);
-
-      const savedPreviousImageUrl = previousImageUrl;
-      setPreviousImageUrl(videoUrl);
-
-      // Set the video source to the object URL
-      if (videoRef.current) {
-        videoRef.current.src = videoUrl;
-      }
-
-      // Clean up the object URL
-      URL.revokeObjectURL(savedPreviousImageUrl);
-    };
-
-    webSocketRef.current.addEventListener("message", onMessage);
-
-    return () => {
-      if (webSocketRef.current) {
-        webSocketRef.current.removeEventListener("open", onOpen);
-        webSocketRef.current.removeEventListener("message", onMessage);
-        webSocketRef.current.removeEventListener("error", onError);
-        webSocketRef.current.removeEventListener("close", onClose);
-      }
-    };
-  }, []);
-
   return (
     <>
       <DetailsViewHeader>
@@ -241,7 +169,7 @@ function CameraViewSection({
       <VerticalSpacing height={1.5} />
       {selectedCamera && (
         <>
-          <video ref={videoRef} controls={false} autoPlay />
+          <VideoWindow camera={selectedCamera} />
           {/*<ImageWindow imageSource={imageDataUrl} lastDate={lastDate} />*/}
         </>
       )}
