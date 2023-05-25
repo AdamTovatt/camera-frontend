@@ -5,6 +5,7 @@ import { CameraInformation } from "./Pages/CameraDetailsPage";
 import VerticalSpacing from "./VerticalSpacing";
 import IconButton from "./IconButton";
 import { useState } from "react";
+import WebSocketStream from "./WebSocketStream";
 
 const MainContainer = styled.div`
   display: flex;
@@ -71,10 +72,10 @@ const ImagePlaceHolder = styled.div`
 `;
 
 function ImageWindow({
-  imageSource,
+  camera,
   lastDate,
 }: {
-  imageSource: string | undefined;
+  camera: CameraInformation;
   lastDate: Date;
 }) {
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -82,34 +83,16 @@ function ImageWindow({
   return (
     <MainContainer>
       <ImageContainer>
-        {imageSource ? (
-          <>
-            {imageSource.length > 100 ? (
-              <>
-                {isFullScreen ? (
-                  <FullScreenImageContainer
-                    onClick={() => {
-                      setIsFullScreen(false);
-                    }}
-                  >
-                    <FullScreenImage src={imageSource} />
-                  </FullScreenImageContainer>
-                ) : (
-                  <Image src={imageSource} />
-                )}
-              </>
-            ) : (
-              <ImagePlaceHolder>
-                <VideoOff size={128} strokeWidth={1} />
-                Camera is offline
-              </ImagePlaceHolder>
-            )}
-          </>
+        {isFullScreen ? (
+          <FullScreenImageContainer
+            onClick={() => {
+              setIsFullScreen(false);
+            }}
+          >
+            <WebSocketStream camera={camera} />
+          </FullScreenImageContainer>
         ) : (
-          <ImagePlaceHolder>
-            <Tv size={128} strokeWidth={1} />
-            Loading camera...
-          </ImagePlaceHolder>
+          <WebSocketStream camera={camera} />
         )}
         <VerticalSpacing />
         <ImageContainerBottomRow>

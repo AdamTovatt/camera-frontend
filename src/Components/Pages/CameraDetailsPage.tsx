@@ -72,32 +72,6 @@ function CameraDetailsPage({
 
   useEffect(() => {
     if (!selectedCamera) return;
-    const endpointUrl =
-      process.env.REACT_APP_API_ENDPOINT_URL +
-      `/camera/stream-image?cameraId=${selectedCamera.id}&updateDelay=3`;
-
-    if (!endpointUrl) {
-      throw new Error(
-        "API endpoint URL not specified in environment variables!"
-      );
-    }
-
-    const eventSource = new EventSource(endpointUrl);
-
-    eventSource.addEventListener("image-update", (event: ImageUpdateEvent) => {
-      setImageDataUrl(event.data);
-      if (event.data.length > 100) {
-        setLastUpdated(new Date());
-      }
-    });
-
-    eventSource.addEventListener("error", (event) => {
-      console.log("error", event);
-    });
-
-    return () => {
-      eventSource.close();
-    };
   }, [selectedCamera]);
 
   useEffect(() => {
@@ -115,7 +89,6 @@ function CameraDetailsPage({
         <CameraViewSection
           selectedCamera={selectedCamera}
           onClosedDetailsView={onClosedDetailsView}
-          imageDataUrl={imageDataUrl}
           lastDate={lastUpdated || new Date("2023-05-01")}
         />
         <CameraDescriptionSection selectedCamera={selectedCamera} />
@@ -146,12 +119,10 @@ function CameraDescriptionSection({
 function CameraViewSection({
   selectedCamera,
   onClosedDetailsView,
-  imageDataUrl,
   lastDate,
 }: {
   selectedCamera: CameraInformation | null;
   onClosedDetailsView: () => void;
-  imageDataUrl: string;
   lastDate: Date;
 }) {
   return (
@@ -167,7 +138,7 @@ function CameraViewSection({
       </DetailsViewHeader>
       <VerticalSpacing height={1.5} />
       {selectedCamera && (
-        <ImageWindow imageSource={imageDataUrl} lastDate={lastDate} />
+        <ImageWindow camera={selectedCamera} lastDate={lastDate} />
       )}
     </>
   );
