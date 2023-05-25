@@ -33,19 +33,6 @@ const ImageContainerBottomRow = styled.div`
 
 const ActiveText = styled.div``;
 
-const Image = styled.img`
-  max-width: 100%;
-`;
-
-const FullScreenImage = styled.img`
-  position: fixed;
-  width: 100vw;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1000;
-`;
-
 const FullScreenImageContainer = styled.div`
   background-color: ${Color.Height0};
   position: fixed;
@@ -54,21 +41,6 @@ const FullScreenImageContainer = styled.div`
   left: 0;
   top: 0;
   z-index: 1000;
-`;
-
-const ImagePlaceHolder = styled.div`
-  background-color: ${Color.Height0};
-  width: 640px;
-  height: 480px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: inset 1px 3px 3px rgba(0, 0, 0, 0.5);
-  flex-direction: column;
-  font-family: "Jost";
-  font-size: 20px;
-  color: ${Color.White};
-  max-width: calc(100vw - 4rem);
 `;
 
 function ImageWindow({
@@ -89,10 +61,10 @@ function ImageWindow({
               setIsFullScreen(false);
             }}
           >
-            <WebSocketStream camera={camera} />
+            <WebSocketStream camera={camera} fullScreen={true} />
           </FullScreenImageContainer>
         ) : (
-          <WebSocketStream camera={camera} />
+          <WebSocketStream camera={camera} fullScreen={false} />
         )}
         <VerticalSpacing />
         <ImageContainerBottomRow>

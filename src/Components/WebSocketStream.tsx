@@ -14,45 +14,13 @@ const MainContainer = styled.div`
   align-items: center;
 `;
 
-const ImageContainer = styled.div`
-  border-radius: 10px;
-  background-color: ${Color.Height1};
-  padding: 1rem;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  display: flex;
-  flex-direction: column;
-  color: ${Color.White};
-`;
+const Image = styled.img<{ fullScreen: boolean; landScapeMode: boolean }>`
+  max-width: ${(props) => (props.fullScreen ? "unset" : "100%")};
 
-const ImageContainerBottomRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const ActiveText = styled.div``;
-
-const Image = styled.img`
-  max-width: 100%;
-`;
-
-const FullScreenVideo = styled.img`
-  position: fixed;
-  width: 100vw;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1000;
-`;
-
-const FullScreenImageContainer = styled.div`
-  background-color: ${Color.Height0};
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  left: 0;
-  top: 0;
-  z-index: 1000;
+  width: ${(props) =>
+    props.fullScreen && !props.landScapeMode ? "100vw" : "unset"};
+  height: ${(props) =>
+    props.fullScreen && props.landScapeMode ? "100vh" : "unset"};
 `;
 
 const ImagePlaceHolder = styled.div`
@@ -70,14 +38,34 @@ const ImagePlaceHolder = styled.div`
   max-width: calc(100vw - 4rem);
 `;
 
-function WebSocketStream({ camera }: { camera: CameraInformation }) {
+function WebSocketStream({
+  camera,
+  fullScreen,
+}: {
+  camera: CameraInformation;
+  fullScreen: boolean;
+}) {
   const [imageSource, setImageSource] = useState<string | null>(null);
-  const [previousImageSource, setPreviousImageSource] = useState<string | null>(
-    null
-  );
   const webSocketRef = useRef<WebSocket | null>(null);
+  const [landScapeMode, setLandscapeMode] = useState(false);
 
-  const imageRef = useRef<HTMLImageElement>(null);
+  useEffect(() => {
+    const handleResize = () => {
+      const { innerWidth, innerHeight } = window;
+      setLandscapeMode(innerWidth > innerHeight);
+    };
+
+    // Initial check on component mount
+    handleResize();
+
+    // Event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Clean up event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     // Create a WebSocket connection
@@ -149,7 +137,11 @@ function WebSocketStream({ camera }: { camera: CameraInformation }) {
   return (
     <MainContainer>
       {imageSource ? (
-        <Image src={imageSource} />
+        <Image
+          src={imageSource}
+          fullScreen={fullScreen}
+          landScapeMode={landScapeMode}
+        />
       ) : (
         <ImagePlaceHolder>
           <Tv size={128} strokeWidth={1} />
