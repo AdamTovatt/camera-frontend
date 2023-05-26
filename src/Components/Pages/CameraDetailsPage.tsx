@@ -91,11 +91,12 @@ function CameraDetailsPage({
           onClosedDetailsView={onClosedDetailsView}
           lastDate={lastUpdated || new Date("2023-05-01")}
         />
-        <CameraDescriptionSection selectedCamera={selectedCamera} />
-        <VerticalSpacing height={1.5} />
+        <VerticalSpacing height={1} />
         Camera control:
         <VerticalSpacing height={0.5} />
         {selectedCamera && <Joystick cameraId={selectedCamera.id} />}
+        <CameraDescriptionSection selectedCamera={selectedCamera} />
+        <VerticalSpacing height={1.5} />
         <VerticalSpacing height={4.5} />
       </InnerPage>
     </Page>
