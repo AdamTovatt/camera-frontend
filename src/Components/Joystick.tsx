@@ -19,10 +19,10 @@ const MainContainer = styled.div`
 
 const InnerContainer = styled.div`
   background-color: ${Color.Height1};
-  min-width: 10rem;
-  min-height: 10rem;
-  max-width: 10rem;
-  max-height: 10rem;
+  min-width: 30rem;
+  min-height: 15rem;
+  max-width: 30rem;
+  max-height: 15rem;
   border-radius: 10px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
@@ -77,25 +77,43 @@ export default function Joystick({ cameraId }: { cameraId: number }) {
   const [lastSentPitch, setLastSentPitch] = React.useState<number>(20);
   const [lastSentYaw, setLastSentYaw] = React.useState<number>(20);
 
-  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (!joyStickMouseDown) return;
-
-    const containerRect = event.currentTarget.getBoundingClientRect();
-    const offsetX = event.clientX - containerRect.left;
-    const offsetY = event.clientY - containerRect.top;
-
-    const newYaw = Math.max(
-      Math.min((offsetX / containerRect.width) * 100, 100),
-      0
-    );
-    const newPitch = Math.max(
-      Math.min((offsetY / containerRect.height) * 100, 100),
-      0
-    );
+  const move = (
+    offsetX: number,
+    offsetY: number,
+    width: number,
+    height: number
+  ) => {
+    const newYaw = Math.max(Math.min((offsetX / width) * 100, 100), 0);
+    const newPitch = Math.max(Math.min((offsetY / height) * 100, 100), 0);
 
     // Update the pitch and yaw state
     setPitch(newPitch);
     setYaw(newYaw);
+  };
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!joyStickMouseDown) return;
+
+    const containerRect = event.currentTarget.getBoundingClientRect();
+    const width = containerRect.width;
+    const height = containerRect.height;
+    const offsetX = event.clientX - containerRect.left;
+    const offsetY = event.clientY - containerRect.top;
+
+    move(offsetX, offsetY, width, height);
+  };
+
+  const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (!joyStickMouseDown) return;
+
+    const containerRect = event.currentTarget.getBoundingClientRect();
+    const width = containerRect.width;
+    const height = containerRect.height;
+    const touch = event.touches[0]; // Get the first touch point
+    const offsetX = touch.clientX - containerRect.left;
+    const offsetY = touch.clientY - containerRect.top;
+
+    move(offsetX, offsetY, width, height);
   };
 
   React.useEffect(() => {
@@ -105,7 +123,7 @@ export default function Joystick({ cameraId }: { cameraId: number }) {
       }
 
       const sendPitch = (pitch / 100) * 2 - 1;
-      const sendYaw = (yaw / 100) * 2 - 1;
+      const sendYaw = ((yaw / 100) * 2 - 1) * -1;
 
       console.log("pitch: " + sendPitch + "\nyaw: " + sendYaw);
 
@@ -124,11 +142,20 @@ export default function Joystick({ cameraId }: { cameraId: number }) {
       onMouseUp={() => {
         setJoyStickMouseDown(false);
       }}
+      onTouchStart={() => {
+        setJoyStickMouseDown(true);
+      }}
+      onTouchEnd={() => {
+        setJoyStickMouseDown(false);
+      }}
       onMouseDown={() => {
         setJoyStickMouseDown(true);
       }}
     >
-      <InnerContainer onMouseMove={handleMouseMove}>
+      <InnerContainer
+        onMouseMove={handleMouseMove}
+        onTouchMove={handleTouchMove}
+      >
         <Handle pitch={pitch} yaw={yaw}>
           <HandleCenter></HandleCenter>
         </Handle>
