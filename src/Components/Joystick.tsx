@@ -19,10 +19,10 @@ const MainContainer = styled.div`
 
 const InnerContainer = styled.div`
   background-color: ${Color.Height1};
-  min-width: 10rem;
-  min-height: 10rem;
-  max-width: 10rem;
-  max-height: 10rem;
+  min-width: 30rem;
+  min-height: 15rem;
+  max-width: 30rem;
+  max-height: 15rem;
   border-radius: 10px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
@@ -105,7 +105,7 @@ export default function Joystick({ cameraId }: { cameraId: number }) {
       }
 
       const sendPitch = (pitch / 100) * 2 - 1;
-      const sendYaw = (yaw / 100) * 2 - 1;
+      const sendYaw = ((yaw / 100) * 2 - 1) * -1;
 
       console.log("pitch: " + sendPitch + "\nyaw: " + sendYaw);
 

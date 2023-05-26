@@ -1,11 +1,7 @@
 import styled from "styled-components";
 
-const VerticalSpacingDiv = styled.div<{ height: number }>`
-  min-height: ${(props) => props.height}rem;
+const VerticalSpacing = styled.div<{ height?: number | null }>`
+  min-height: ${(props) => (props.height ? props.height : 1)}rem;
 `;
-
-function VerticalSpacing({ height }: { height?: number | undefined }) {
-  return <VerticalSpacingDiv height={height ? height : 1} />;
-}
 
 export default VerticalSpacing;

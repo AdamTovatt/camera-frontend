@@ -96,6 +96,7 @@ function CameraDetailsPage({
         Camera control:
         <VerticalSpacing height={0.5} />
         {selectedCamera && <Joystick cameraId={selectedCamera.id} />}
+        <VerticalSpacing height={4.5} />
       </InnerPage>
     </Page>
   );
