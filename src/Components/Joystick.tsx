@@ -160,10 +160,12 @@ export default function Joystick({
       onMouseUp={() => {
         setJoyStickMouseDown(false);
       }}
-      onTouchStart={() => {
+      onTouchStart={(event) => {
+        event.preventDefault();
         setJoyStickMouseDown(true);
       }}
-      onTouchEnd={() => {
+      onTouchEnd={(event) => {
+        event.preventDefault();
         setJoyStickMouseDown(false);
       }}
       onMouseDown={() => {
