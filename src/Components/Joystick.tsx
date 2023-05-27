@@ -20,8 +20,8 @@ const MainContainer = styled.div`
 
 const InnerContainer = styled.div`
   background-color: ${Color.Height1};
-  min-width: 30rem;
-  min-height: 15rem;
+  width: 30rem;
+  height: 15rem;
   max-width: 30rem;
   max-height: 15rem;
   border-radius: 10px;
@@ -99,6 +99,7 @@ export default function Joystick({
   };
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
     if (!joyStickMouseDown) return;
 
     const containerRect = event.currentTarget.getBoundingClientRect();
@@ -111,6 +112,7 @@ export default function Joystick({
   };
 
   const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    event.preventDefault();
     if (!joyStickMouseDown) return;
 
     const containerRect = event.currentTarget.getBoundingClientRect();
