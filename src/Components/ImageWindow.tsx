@@ -46,9 +46,11 @@ const FullScreenImageContainer = styled.div`
 function ImageWindow({
   camera,
   lastDate,
+  onConnectionEstablished,
 }: {
   camera: CameraInformation;
   lastDate: Date;
+  onConnectionEstablished: (webSocket: WebSocket) => void;
 }) {
   const [isFullScreen, setIsFullScreen] = useState(false);
 
@@ -61,10 +63,18 @@ function ImageWindow({
               setIsFullScreen(false);
             }}
           >
-            <WebSocketStream camera={camera} fullScreen={true} />
+            <WebSocketStream
+              camera={camera}
+              fullScreen={true}
+              onConnectionEstablished={onConnectionEstablished}
+            />
           </FullScreenImageContainer>
         ) : (
-          <WebSocketStream camera={camera} fullScreen={false} />
+          <WebSocketStream
+            camera={camera}
+            fullScreen={false}
+            onConnectionEstablished={onConnectionEstablished}
+          />
         )}
         <VerticalSpacing />
         <ImageContainerBottomRow>

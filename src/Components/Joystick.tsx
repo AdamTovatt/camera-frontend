@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Aperture } from "react-feather";
 import { Color } from "./Constants";
 import { moveCamera } from "../Functions/Api";
+import { sendMoveMessage } from "../Functions/WebSockets";
 
 const MainContainer = styled.div`
   min-width: 100%;
@@ -69,7 +70,13 @@ const Handle = styled.div.attrs((props: HandleProps) => ({
   border: 2px solid ${Color.Height2Lighter};
 `;
 
-export default function Joystick({ cameraId }: { cameraId: number }) {
+export default function Joystick({
+  cameraId,
+  websocket,
+}: {
+  cameraId: number;
+  websocket: WebSocket;
+}) {
   const [joyStickMouseDown, setJoyStickMouseDown] =
     React.useState<boolean>(false);
   const [pitch, setPitch] = React.useState<number>(50);
@@ -127,15 +134,24 @@ export default function Joystick({ cameraId }: { cameraId: number }) {
 
       console.log("pitch: " + sendPitch + "\nyaw: " + sendYaw);
 
-      moveCamera(cameraId, sendPitch, sendYaw);
+      //moveCamera(cameraId, sendPitch, sendYaw);
+      sendMoveMessage(websocket, sendPitch, sendYaw);
 
       setLastSentPitch(pitch);
       setLastSentYaw(yaw);
-    }, 100); // 100 milliseconds = 0.1 seconds
+    }, 10); // 100 milliseconds = 0.1 seconds
     return () => {
       clearInterval(interval);
     };
-  }, [joyStickMouseDown, pitch, yaw, lastSentPitch, lastSentYaw, cameraId]);
+  }, [
+    joyStickMouseDown,
+    pitch,
+    yaw,
+    lastSentPitch,
+    lastSentYaw,
+    cameraId,
+    websocket,
+  ]);
 
   return (
     <MainContainer

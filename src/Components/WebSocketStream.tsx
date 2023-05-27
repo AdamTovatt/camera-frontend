@@ -5,6 +5,7 @@ import { CameraInformation } from "./Pages/CameraDetailsPage";
 import VerticalSpacing from "./VerticalSpacing";
 import IconButton from "./IconButton";
 import { useEffect, useRef, useState } from "react";
+import { initializeConnection, sendJsonMessage } from "../Functions/WebSockets";
 
 const MainContainer = styled.div`
   display: flex;
@@ -41,9 +42,11 @@ const ImagePlaceHolder = styled.div`
 function WebSocketStream({
   camera,
   fullScreen,
+  onConnectionEstablished,
 }: {
   camera: CameraInformation;
   fullScreen: boolean;
+  onConnectionEstablished: (webSocket: WebSocket) => void;
 }) {
   const [imageSource, setImageSource] = useState<string | null>(null);
   const webSocketRef = useRef<WebSocket | null>(null);
@@ -70,7 +73,8 @@ function WebSocketStream({
   useEffect(() => {
     // Create a WebSocket connection
     webSocketRef.current = new WebSocket(
-      "wss://sakurapi.se/camera-server/video-output-stream"
+      //"wss://sakurapi.se/camera-server/video-output-stream"
+      "ws://localhost:5000/video-output-stream"
     );
 
     // Clean up the WebSocket connection on unmount
@@ -86,7 +90,11 @@ function WebSocketStream({
 
     // send an initial message with the camera.id when the WebSocket is open
     const onOpen = () => {
-      webSocketRef.current?.send(new Uint8Array([camera.id])); // send the camera id
+      if (!webSocketRef.current) return;
+
+      initializeConnection(webSocketRef.current, "fake token", camera.id);
+
+      onConnectionEstablished(webSocketRef.current);
     };
 
     const onError = (event: Event) => {

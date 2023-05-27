@@ -69,6 +69,7 @@ function CameraDetailsPage({
   const [selectedCamera, setSelectedCamera] =
     useState<CameraInformation | null>(camera);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
     if (!selectedCamera) return;
@@ -90,11 +91,16 @@ function CameraDetailsPage({
           selectedCamera={selectedCamera}
           onClosedDetailsView={onClosedDetailsView}
           lastDate={lastUpdated || new Date("2023-05-01")}
+          onConnectionEstablished={(webSocket) => {
+            setWebSocket(webSocket);
+          }}
         />
         <VerticalSpacing height={1} />
         Camera control:
         <VerticalSpacing height={0.5} />
-        {selectedCamera && <Joystick cameraId={selectedCamera.id} />}
+        {selectedCamera && webSocket && (
+          <Joystick cameraId={selectedCamera.id} websocket={webSocket} />
+        )}
         <CameraDescriptionSection selectedCamera={selectedCamera} />
         <VerticalSpacing height={1.5} />
         <VerticalSpacing height={4.5} />
@@ -122,10 +128,12 @@ function CameraViewSection({
   selectedCamera,
   onClosedDetailsView,
   lastDate,
+  onConnectionEstablished,
 }: {
   selectedCamera: CameraInformation | null;
   onClosedDetailsView: () => void;
   lastDate: Date;
+  onConnectionEstablished: (webSocket: WebSocket) => void;
 }) {
   return (
     <>
@@ -140,7 +148,11 @@ function CameraViewSection({
       </DetailsViewHeader>
       <VerticalSpacing height={1.5} />
       {selectedCamera && (
-        <ImageWindow camera={selectedCamera} lastDate={lastDate} />
+        <ImageWindow
+          camera={selectedCamera}
+          lastDate={lastDate}
+          onConnectionEstablished={onConnectionEstablished}
+        />
       )}
     </>
   );
