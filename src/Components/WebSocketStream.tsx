@@ -73,8 +73,8 @@ function WebSocketStream({
   useEffect(() => {
     // Create a WebSocket connection
     webSocketRef.current = new WebSocket(
-      //"wss://sakurapi.se/camera-server/video-output-stream"
-      "ws://localhost:5000/video-output-stream"
+      "wss://sakurapi.se/camera-server/video-output-stream"
+      //"ws://localhost:5000/video-output-stream"
     );
 
     // Clean up the WebSocket connection on unmount
