@@ -132,7 +132,7 @@ export default function Joystick({
       }
 
       const sendPitch = (pitch / 100) * 2 - 1;
-      const sendYaw = ((yaw / 100) * 2 - 1) * -1;
+      const sendYaw = (yaw / 100) * 2 - 1;
 
       console.log("pitch: " + sendPitch + "\nyaw: " + sendYaw);
 
