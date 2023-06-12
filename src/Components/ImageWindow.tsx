@@ -78,7 +78,7 @@ function ImageWindow({
         )}
         <VerticalSpacing />
         <ImageContainerBottomRow>
-          <ActiveText>{GetCameraStatus({ lastDate })}</ActiveText>
+          <ActiveText>{/*GetCameraStatus({ lastDate })*/}</ActiveText>
           <IconButton
             icon={<Maximize2 color={Color.White} />}
             onClick={() => {
@@ -91,6 +91,7 @@ function ImageWindow({
   );
 }
 
+/*
 function GetCameraStatus({ lastDate }: { lastDate: Date }): string {
   const timeSinceActive = (new Date().getTime() - lastDate.getTime()) / 1000; // 1000 = 1 second in milliseconds (we want to convert to seconds)
 
@@ -101,5 +102,6 @@ function GetCameraStatus({ lastDate }: { lastDate: Date }): string {
 
   return "Last active: " + new Date(lastDate).toLocaleString();
 }
+*/
 
 export default ImageWindow;

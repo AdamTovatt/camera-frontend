@@ -55,7 +55,7 @@ function StartPage({
 
   return (
     <Page>
-      <Header />
+      <Header onLogoClick={() => {}}/>
       <InnerPage>
         <VerticalSpacing height={7} />
         Cameras:

@@ -48,13 +48,13 @@ const HeaderText = styled.div`
   justify-content: center;
 `;
 
-function Header() {
+function Header({onLogoClick}: {onLogoClick: () => void}) {
   return (
     <HeaderContainer>
       <HeaderContent>
         <Logo
           onClick={() => {
-            window.location.reload();
+            onLogoClick();
           }}
         >
           <Aperture style={{ color: Color.White, strokeWidth: 1 }} size={52} />

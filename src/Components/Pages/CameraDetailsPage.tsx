@@ -84,7 +84,7 @@ function CameraDetailsPage({
 
   return (
     <Page>
-      <Header />
+      <Header onLogoClick={onClosedDetailsView}/>
       <VerticalSpacing height={7} />
       <InnerPage>
         <CameraViewSection
